@@ -213,20 +213,23 @@ async def crawl_parallel(urls: List[str], max_concurrent: int = 5):
         await crawler.close()
 
 def get_pydantic_ai_docs_urls() -> List[str]:
-    """Get URLs from Pydantic AI docs sitemap."""
-    sitemap_url = "https://ai.pydantic.dev/sitemap.xml"
+    """Get URLs from a user-specified sitemap.xml."""
+
+    sitemap_url = input("Enter the sitemap.xml URL to scrape: ")
+
     try:
         response = requests.get(sitemap_url)
         response.raise_for_status()
-        
+
         # Parse the XML
         root = ElementTree.fromstring(response.content)
-        
+
         # Extract all URLs from the sitemap
         namespace = {'ns': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
         urls = [loc.text for loc in root.findall('.//ns:loc', namespace)]
-        
+
         return urls
+
     except Exception as e:
         print(f"Error fetching sitemap: {e}")
         return []
